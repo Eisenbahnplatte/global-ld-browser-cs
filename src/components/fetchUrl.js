@@ -7,7 +7,6 @@ export async function fetchUrl(url){
 
   try{
       const response = await fetch(url, { 
-          mode: 'cors',
           headers: {
               'Accept': ['text/turtle;q=0.5', 'application/n-triples;q=1', "application/ld+json;q=0.8"]
           } 

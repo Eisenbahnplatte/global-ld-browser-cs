@@ -4,7 +4,7 @@
 
     <div class="input-group input-group-lg">
       <span class="input-group-text" id="inputGroup-sizing-lg">Global ID</span>
-      <input v-model="subject" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+      <input v-model="subject" @change="refreshAndCalcEntity(subject)" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
     </div>
     
     <br>
@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-        api: "http://api.dbpedia.link/retrieve/",
+        api: "http://api.dbpedia.link/retrieve/proxy",
         sameThing: "https://global.dbpedia.org/same-thing/lookup/?uri=",
         subject: 'https://global.dbpedia.org/id/2wvzs',
         locals: [],
@@ -79,7 +79,6 @@ export default {
           })
 
           let data = await response.json()
-          console.log(data)
           vm.subject = data["global"]
           vm.locals = data["locals"]
 
@@ -91,10 +90,22 @@ export default {
             this.calcEntity(local)
           }
     },
+    async refreshAndCalcEntity(url){
+          this.locals = []
+          this.cluster = []
+          this.countraw = 0
+          this.countfusion = 0
+          this.countfilteredraw = 0
+
+          this.calcEntity(url)
+    },
     async calcEntity(url) {
-          let rdfData2 = await fetchUrl(url)
-          url ="http://example.com/jane"
-          let rdfData = turtleTest()
+          console.log(url)
+          let newUrl = this.api + '?iri=' + encodeURIComponent (url)
+          console.log(newUrl)
+          let rdfData = await fetchUrl(newUrl)
+          // url ="http://example.com/jane"
+          let rdfData2 = turtleTest()
           console.log(rdfData2)
           let store = await feedStore(rdfData)
 
@@ -137,10 +148,8 @@ export default {
     }
   },
   async created() {
-    let vm = this
-
-    // vm.calcCluster()
-    vm.calcEntity("http://fr.dbpedia.org/resource/Berlin")
+    // this.calcEntity("https://www.imdb.com/title/tt0068646/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=1a264172-ae11-42e4-8ef7-7fed1973bb8f&pf_rd_r=P8QYTAA0STCVRRBQDBRP&pf_rd_s=center-1&pf_rd_t=15506&pf_rd_i=top&ref_=chttp_tt_2")
+    this.calcCluster(this.subject)
   },
   
 }
