@@ -1,0 +1,7 @@
+Warum schreibt man .vue files wenn man sie sowieso zu .js umwandeln muss
+
+https://vuejs.org/guide/essentials/reactivity-fundamentals.html#reactive-proxy-vs-original
+
+https://vuejs.org/guide/essentials/reactivity-fundamentals.html#stateful-methods
+
+https://vuejs.org/guide/essentials/computed.html#computed-caching-vs-methods

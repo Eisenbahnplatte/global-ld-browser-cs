@@ -1,0 +1,21 @@
+{
+  "type": "module",
+  "scripts": {
+    "bundle": "browserify rdf2quads --standalone rdf -o rdf.js -t [ babelify — presets [ env ] ]",
+    "bundleRdfParse": "browserify --require ./node_modules/rdf-parse/lib/index.js --standalone rdf -o rdfParserLib.js -t [ babelify — presets [ env ] ]"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "dependencies": {
+    "rdf-parse": "^2.1.0",
+    "streamify-string": "1.0.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.10",
+    "babelify": "^10.0.0",
+    "browserify": "16.5.1"
+  }
+}

@@ -1,17 +1,73 @@
 <!DOCTYPE html>
 <head>
+  <meta charset="UTF-8">
+  <title>Client Sided GFS Browser</title>
+
+  <script type="text/javascript" src="https://livejs.com/live.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { createApp } from 'vue'
+    import App from './App.js'
+
+    const app = createApp(App)
+
+    app.config.errorHandler = (err) => {
+        console.log("ERRORHANDLING")
+        console.log(err)
+    }
+    
+    app.mount('#app')
+
+  </script>
+  
+
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.3/dist/vue-resource.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-select@3.18.3/dist/vue-select.min.js"></script>
+
+
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-select@3.18.3/dist/vue-select.css">
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
-  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    
+    <div id="app">
+        <button @click="count++">Increase</button>
+        {{ count }}
+
+        {{ count + 1 }}
+        <div v-bind:id="dynamicId"></div>
+        <button v-bind:disabled="isButtonDisabled">Button</button>
+        <a :href="url">URL Example</a>
+
+        <a v-on:click="increment()">Increase</a>
+        <a @click="increment()">Increase</a>
+
+        <button @click="increment(5)">{{ count }}</button>
+
+        <br>
+
+        <p>Has published books:</p>
+<span>{{ publishedBooksMessage }}</span>
+        <p>{{ now }}</p>
+
+        <div class="static" :class="{ active: isActive, 'text-danger': hasError }"></div>
+
+    </div>
+
+  
+
   <h1 style="width: 100%">
     <img style="height:50px;" src="https://upload.wikimedia.org/wikipedia/commons/a/ae/73424-sync-symbol.svg" /> Global Linked Data Browser
   </h1>
@@ -38,34 +94,34 @@
         <hr>
         <details open>
           <summary v-html="row.pre_stats"></summary>
-	  <p>
-          <table class="table table-striped">
-            <thead>
-              <colgroup>
-                <col span="1" style="width: 33%;">
-                <col span="1" style="width: 33%;">
-                <col span="1" style="width: 33%;">
-              </colgroup>
-              <tr>
-                <th>predicate</th>
-                <th>value</th>
-                <th>source</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row2 in row.ops">
-                <td v-html="row.pre"></td>
-                <td v-html="row2.values"></td>
-                <td v-html="row2.prov"></td>
-              </tr>
-            </tbody>
-          </table>
-	  </p>
+	        <p>
+            <table class="table table-striped">
+              <thead>
+                <colgroup>
+                  <col span="1" style="width: 33%;">
+                  <col span="1" style="width: 33%;">
+                  <col span="1" style="width: 33%;">
+                </colgroup>
+                <tr>
+                  <th>predicate</th>
+                  <th>value</th>
+                  <th>source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row2 in row.ops">
+                  <td v-html="row.pre"></td>
+                  <td v-html="row2.values"></td>
+                  <td v-html="row2.prov"></td>
+                </tr>
+              </tbody>
+            </table>
+	        </p>
         </details>
       </div>
     </div>
   </div>
-  <script src="script.js"></script>
+  <!-- <script src="script.js"></script> -->
 <script>
 var text = $('.text-overflow'),
      btn = $('.btn-overflow'),
@@ -133,3 +189,6 @@ xa.addEventListener('click', function(e) {
 </script>
 </body>
 </html>
+
+
+  
