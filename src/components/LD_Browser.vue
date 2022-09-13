@@ -11,9 +11,9 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-sm">Triples in Total: {{ countraw }}</div>
-        <div class="col-sm">Triples filtered: {{ countfilteredraw }} </div>
-        <div class="col-sm">Triples in Cluster: {{ countfusion }} </div>
+        <div class="col-sm triples">Triples in Total: {{ countraw }} </div>
+        <div class="col-sm triples">Triples filtered: {{ countfilteredraw }} </div>
+        <div class="col-sm triples">Triples in Cluster: {{ countfusion }} </div>
       </div>
     </div>
 
@@ -21,20 +21,18 @@
 
     <table class="table table-sm table-striped table-hover table-bordered">
       <caption>Predicates and Objects of Global Id</caption>
-      <thead>
-        <tr>
-          <th scope="col">Predicate</th>
-          <th scope="col">Object</th>
-        </tr>
-      </thead>
+
       <tbody>
         <tr v-for="pred in cluster" v-bind:key="pred">
-          <td><a v-bind:href="pred.name">{{pred.name}}</a> </td>
-          <td> 
-            <div v-for="obj in pred.objects" v-bind:key="obj"> 
-              {{ obj.name }}
-              <a v-for="prov in obj.provs" :key="prov" :href="prov">{{prov}}</a>
-            </div>
+          <td style="width: 10%;"><a v-bind:href="pred.name">{{pred.name}}</a> </td>
+
+          <td class="tableCol"> 
+            <table>
+              <tr v-for="obj in pred.objects" v-bind:key="obj">
+                <td class="tableCol">{{obj.name}}</td>
+                <td class="tableCol"><a v-for="prov in obj.provs" :key="prov" :href="prov">{{prov}}</a></td>
+              </tr>
+            </table>
           </td>
         </tr>
       </tbody>
@@ -155,8 +153,17 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only 
+Add "scoped" attribute to limit CSS to this component only 
 <style scoped>
+.tableCol {
+  width: 25%
+}
+.triples {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  background-color: rgba(86,61,124,.15);
+  border: 1px solid rgba(86,61,124,.2);
+}
 h3 {
   margin: 40px 0 0;
 }
@@ -172,4 +179,3 @@ a {
   color: #42b983;
 }
 </style>
--->
