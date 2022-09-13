@@ -2,35 +2,44 @@
 
     <br>
 
-    <div class="input-group input-group-lg">
+    <div class="input-group input-group-lg global-id-input">
       <span class="input-group-text" id="inputGroup-sizing-lg">Global ID</span>
       <input v-model="subject" @change="refreshAndCalcEntity(subject)" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
     </div>
     
     <br>
 
-    <div class="container">
-      <div class="row">
+    <div class="container triplesData">
+      <div class="row" >
         <div class="col-sm triples">Triples in Total: {{ countraw }} </div>
         <div class="col-sm triples">Triples filtered: {{ countfilteredraw }} </div>
         <div class="col-sm triples">Triples in Cluster: {{ countfusion }} </div>
       </div>
     </div>
 
-    <br> 
+    <br>
+
+
 
     <table class="table table-sm table-striped table-hover table-bordered">
       <caption>Predicates and Objects of Global Id</caption>
-
+      <thead>
+        <th class="predicate">Predicate</th>
+        <th style="width:45%">Object</th>
+        <th style="width:45%">Resource</th>
+      </thead>
       <tbody>
-        <tr v-for="pred in cluster" v-bind:key="pred">
-          <td style="width: 10%;"><a v-bind:href="pred.name">{{pred.name}}</a> </td>
-
-          <td class="tableCol"> 
-            <table>
-              <tr v-for="obj in pred.objects" v-bind:key="obj">
-                <td class="tableCol">{{obj.name}}</td>
-                <td class="tableCol"><a v-for="prov in obj.provs" :key="prov" :href="prov">{{prov}}</a></td>
+        <tr v-for="pred in cluster" v-bind:key="pred" @click="expandPred(pred)">
+          <td><a v-bind:href="pred.name">{{pred.name}}</a> </td>
+          <td colspan="2"> 
+            <table class="subTable">
+              <tr v-show="!pred.expanded">
+                <td>{{pred.objects[0].name}}</td>
+                <td><a v-for="prov in pred.objects[0].provs" :key="prov" :href="prov">{{prov}}</a></td>
+              </tr>
+              <tr v-show="pred.expanded" v-for="obj in pred.objects" v-bind:key="obj">
+                <td>{{obj.name}}</td>
+                <td><a v-for="prov in obj.provs" :key="prov" :href="prov">{{prov}}</a></td>
               </tr>
             </table>
           </td>
@@ -69,6 +78,17 @@ export default {
     }
   },
   methods: {
+    expandPred(pred){
+
+      console.log(this.cluster.findIndex(predicate => predicate.name === pred.name ))
+      let clusterPred = this.cluster.find(predicate => predicate.name === pred.name )
+      
+      if (!clusterPred.expanded)
+        clusterPred.expanded=true
+      else
+        clusterPred.expanded=false
+      
+    },
     async calcCluster(){
           let vm = this;
 
@@ -120,6 +140,7 @@ export default {
               if(pre == undefined){
                 this.cluster.push({
                   name: quad.predicate.id,
+                  expanded: false,
                   objects: [{
                     name: quad.object.id,
                     provs: [quad.subject.id]
@@ -133,6 +154,7 @@ export default {
                 } else {
                   pre.objects.push({
                     name: quad.object.id,
+                    expanded: false,
                     provs: [quad.subject.id]
                   })
                   this.countfusion +=1
@@ -155,16 +177,30 @@ export default {
 
 Add "scoped" attribute to limit CSS to this component only 
 <style scoped>
-.tableCol {
-  width: 25%
+.predicate {
+  width: 10%;
 }
+.subTable {
+  width: 100%
+}
+.subTable td {
+  width: 50%
+}
+
+.global-id-input, .triplesData{
+  width: 100%;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
 .triples {
   padding-top: .75rem;
   padding-bottom: .75rem;
   background-color: rgba(86,61,124,.15);
   border: 1px solid rgba(86,61,124,.2);
 }
-h3 {
+
+/* h3 {
   margin: 40px 0 0;
 }
 ul {
@@ -177,5 +213,5 @@ li {
 }
 a {
   color: #42b983;
-}
+} */
 </style>
