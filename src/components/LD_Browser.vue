@@ -14,6 +14,8 @@
         <div class="col-sm triples">Triples in Total: {{ countraw }} </div>
         <div class="col-sm triples">Triples filtered: {{ countfilteredraw }} </div>
         <div class="col-sm triples">Triples in Cluster: {{ countfusion }} </div>
+        <div class="col-sm triples">Sources: {{ countSources }} </div>
+        <div class="col-sm triples">Triples/Source: {{ countEntitiesAverage }} </div>
       </div>
     </div>
 
@@ -35,11 +37,20 @@
             <table class="subTable">
               <tr v-show="!pred.expanded">
                 <td>{{pred.objects[0].name}}</td>
-                <td><a v-for="prov in pred.objects[0].provs" :key="prov" :href="prov">{{prov}}</a></td>
+                <td>
+                  <div v-for="prov in pred.objects[0].provs" :key="prov">
+                    <a :href="prov">{{prov}}</a>
+                  </div>
+                </td>
               </tr>
-              <tr v-show="pred.expanded" v-for="obj in pred.objects" v-bind:key="obj">
+              <tr class="expanedTR" v-show="pred.expanded" v-for="obj in pred.objects" v-bind:key="obj">
                 <td>{{obj.name}}</td>
-                <td><a v-for="prov in obj.provs" :key="prov" :href="prov">{{prov}}</a></td>
+                <td>
+                  <div v-for="prov in obj.provs" :key="prov">
+                    <a :href="prov">{{prov}}</a>
+                  </div>
+                </td>
+                <!-- <td><a v-for="prov in obj.provs" :key="prov" :href="prov">{{prov}}</a></td> -->
               </tr>
             </table>
           </td>
@@ -58,7 +69,7 @@
 
 <script>
 import { feedStore, getPredsAndObjects, getStoreSize} from './store';
-import { fetchUrl, turtleTest } from './fetchUrl'
+import { fetchUrl } from './fetchUrl'
 
 export default {
   name: 'LD_Browser',
@@ -72,9 +83,16 @@ export default {
         subject: 'https://global.dbpedia.org/id/2wvzs',
         locals: [],
         cluster: [],
+        countSources: 0,
+        countEntitiesAverage: 0,
         countraw: 0,
         countfilteredraw: 0,
         countfusion: 0
+    }
+  },
+  computed:{
+    showSource(sources){
+      return sources.join(" | ")
     }
   },
   methods: {
@@ -122,9 +140,15 @@ export default {
           let newUrl = this.api + '?iri=' + encodeURIComponent (url)
           console.log(newUrl)
           let rdfData = await fetchUrl(newUrl)
+
+          if (rdfData == undefined) {
+            this.countSources += 1
+            this.countEntitiesAverage = Math.round((this.countfilteredraw / this.countSources) * 10) / 10 
+            return 0
+          }
           // url ="http://example.com/jane"
-          let rdfData2 = turtleTest()
-          console.log(rdfData2)
+          // let rdfData2 = turtleTest()
+          // console.log(rdfData2)
           let store = await feedStore(rdfData)
 
           let size = getStoreSize(store)
@@ -150,7 +174,8 @@ export default {
                 this.countfusion +=1
               } else {
                 if(pre.objects.find(obj => obj.name === quad.object.id)){
-                  pre.objects.find(obj => obj.name === quad.object.id)[0].prov.push(quad.subject.id)
+                  console.log()
+                  pre.objects.find(obj => obj.name === quad.object.id).provs.push(quad.subject.id)
                 } else {
                   pre.objects.push({
                     name: quad.object.id,
@@ -160,9 +185,10 @@ export default {
                   this.countfusion +=1
                 }
               }
-              
-
           }
+
+          this.countSources += 1
+          this.countEntitiesAverage = Math.round((this.countfilteredraw / this.countSources) * 10) / 10 
           console.log(this.cluster)
           console.log(size)
     }
@@ -178,13 +204,23 @@ export default {
 Add "scoped" attribute to limit CSS to this component only 
 <style scoped>
 .predicate {
-  width: 10%;
+  width: 25%;
 }
+
 .subTable {
   width: 100%
 }
+
 .subTable td {
-  width: 50%
+  width: 50%;
+  max-width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expanedTR {
+  border-bottom: 1px;
+  border-style: dotted;
 }
 
 .global-id-input, .triplesData{
