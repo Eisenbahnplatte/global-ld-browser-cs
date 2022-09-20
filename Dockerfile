@@ -1,6 +1,7 @@
 FROM node:current-alpine3.16
 
-RUN apk add git
+RUN apk add --no-cache git
+RUN apk add --no-cache make
 RUN npm install -g http-server
 
 WORKDIR /app
