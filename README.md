@@ -31,17 +31,17 @@ npm: ^8.15.1
 
 ### Setup:
 ```
-npm install
+make install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+make serve
 ```
 
 ### Compiles and minifies for production
 ```
-npm run build
+make build
 ```
 
 

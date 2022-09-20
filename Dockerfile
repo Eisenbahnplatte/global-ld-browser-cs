@@ -8,8 +8,8 @@ RUN git clone https://github.com/Eisenbahnplatte/global-ld-browser-cs.git
 
 WORKDIR /app/global-ld-browser-cs
 RUN git checkout cs-global-ld-browser
-RUN npm install
-RUN npm run build
+RUN make install
+RUN make run build
 
 EXPOSE 8080
 
