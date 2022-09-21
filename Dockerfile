@@ -14,6 +14,5 @@ RUN git checkout cs-global-ld-browser
 RUN make install
 RUN make build
 
-
 EXPOSE 8080
 CMD [ "http-server", "dist" ]
